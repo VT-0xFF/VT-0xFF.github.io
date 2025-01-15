@@ -16,12 +16,11 @@
       }
           .blur-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0px;
+      left: 0px;
+      width: 95%;
+      height: 95%;
       backdrop-filter: blur(10px);
-      display: flex;
       justify-content: center;
       align-items: center;
       background: rgba(0, 0, 0, 0.5);
@@ -29,6 +28,9 @@
       font-size: 2rem;
       cursor: pointer;
       transition: opacity 0.5s ease;
+      text-align: justify;
+      margin: 0;
+      border-radius: 0;
     }
 
     .blur-overlay.hidden {
@@ -69,7 +71,7 @@
       <h1>VT</h1>
       <p style="text-align:center">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games. </p>
       <script>
-            function unblur() {
+            window.unblur = function() {
       const overlay = document.getElementById('overlay');
       const audio = document.getElementById('audio');
       audio.play()
