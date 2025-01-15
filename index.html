@@ -55,7 +55,7 @@
   </head>
   <body>
     <div class="blur-overlay" id="overlay"><b>Click to Enter...</b></div>
-  <audio id="audio" loop src="shoot.mp3"></audio>
+  <audio id="audio" loop></audio>
     <div class="main">
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
       <h1>VT</h1>
@@ -67,8 +67,10 @@
       let source = null;
       let audioContext = null;
       let frequencyData = 0
-      
-      overlay.addEventListener('click', () => {
+      const audios = ["TDB_-_Welcome_to_The_Bunker.mp3","Trying.mp3","index.html","shoot.mp3","soundcloud_1293396583_audio.mp3","soundcloud_20863566_audio.mp3","soundcloud_825888547_audio.opus","youtube_-2yAEUp9v6M_audio.opus","youtube_-zPv24yAzwg_audio.mp3","youtube_94NIC0WijLY_audio.mp3","youtube_AXnqkVTFUqY_audio.mp3","youtube_I-jh-heGS9Q_audio.mp3","youtube_dTfmUAg0AGM_audio.mp3"]
+      audio.src = audios[Math.floor(Math.random() * audios.length)]
+        overlay.addEventListener('click', () => {
+        
       audio.play()
       audio.volume = 0.4
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
