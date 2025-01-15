@@ -91,8 +91,6 @@ function getaudio() {
   } while (audio === lastaudio);
   return audio;
 }
-
-const audio = document.createElement('audio');
 audio.src = getaudio();
 
 localStorage.setItem('lastaudio', audio.src);
