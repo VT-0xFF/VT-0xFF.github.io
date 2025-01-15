@@ -9,17 +9,18 @@
         width: 100%;
         height: 100%;
         position: fixed;
-        background-color: #f0f0f2;
+        background-color: #282828;
         margin: 0;
         padding: 0;
-        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #fff;
       }
           .blur-overlay {
       position: fixed;
       top: 0px;
       left: 0px;
-      width: 95%;
-      height: 95%;
+      width: 100%;
+      height: 100%;
       backdrop-filter: blur(10px);
       justify-content: center;
       align-items: center;
@@ -31,57 +32,66 @@
       text-align: justify;
       margin: 0;
       border-radius: 0;
+      z-index:9999;
+      display: flex;
     }
 
     .blur-overlay.hidden {
       opacity: 0;
     }
 
-      div {
+      .main {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 600px;
         margin: 5em auto;
         padding: 2em;
-        background-color: #fdfdff;
+        background-color: #484848;
         border-radius: .5em;
         box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, .02)
-      }
-
-      a:link,
-      a:visited {
-        color: #38488f;
-        text-decoration: none
-      }
-
-      @media (max-width:700px) {
-        div {
-          margin: 0 auto;
-          width: auto
-        }
       }
     </style>
   </head>
   <body>
     <div class="blur-overlay" id="overlay">Click to continue.</div>
-  <audio id="audio" src="shoot.mp3"></audio>
-    <div>
+  <audio id="audio" loop src="shoot.mp3"></audio>
+    <div class="main">
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
       <h1>VT</h1>
       <p style="text-align:center">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games. </p>
       <script>
       const overlay = document.getElementById('overlay')
+      const audio = document.getElementById('audio');
+      let analyser = null;
+      let source = null;
+      let audioContext = null;
+      let frequencyData = 0
       
       overlay.addEventListener('click', () => {
-      const audio = document.getElementById('audio');
       audio.play()
+      audio.volume = 0.4
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      source = audioContext.createMediaElementSource(audio);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+      analyser.fftSize = 256;
+        frequencyData = new Uint8Array(analyser.frequencyBinCount);
       overlay.classList.add('hidden');
       overlay.addEventListener('transitionend', () => {
         overlay.remove();
       });
     })
-        function clockCursor(e) {
+function calculateLoudness() {
+    if (analyser) {
+      analyser.getByteFrequencyData(frequencyData);
+      const sum = frequencyData.reduce((a, b) => a + b ** 2, 0);
+      return Math.sqrt(sum / frequencyData.length) / 255;
+    }
+    return 0;
+  }
+function clockCursor(e) {
           let t = e && e.element,
             l = t || document.body,
             n = window.innerWidth,
@@ -90,11 +100,11 @@
               x: n / 2,
               y: n / 2
             },
-            r, h, s, c = e && e.dateColor || "blue",
-            $ = e && e.faceColor || "black",
+            r, h, s, c = e && e.dateColor || "red",
+            $ = e && e.faceColor || "white",
             g = e && e.secondsColor || "red",
-            u = e && e.minutesColor || "black",
-            d = e && e.hoursColor || "black",
+            u = e && e.minutesColor || "white",
+            d = e && e.hoursColor || "white",
             a = e && e.theDays || ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", ],
             f = e && e.theMonths || ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER", ],
             v = new Date,
@@ -122,56 +132,90 @@
           let H = window.matchMedia("(prefers-reduced-motion: reduce)");
 
           function N() {
-            if (H.matches) return console.log("This browser has prefers reduced motion turned on, so the cursor did not init"), !1;
-            h = (r = document.createElement("canvas")).getContext("2d"), r.style.top = "0px", r.style.left = "0px", r.style.pointerEvents = "none", t ? (r.style.position = "absolute", l.appendChild(r), r.width = l.clientWidth, r.height = l.clientHeight) : (r.style.position = "fixed", document.body.appendChild(r), r.width = n, r.height = o), h.font = "10px sans-serif", h.textAlign = "center", h.textBaseline = "middle";
-            for (let e = 0; e < w; e++) D[e] = 0, T[e] = 0, M[e] = 0, I[e] = 0;
-            for (let a = 0; a < E.length; a++) B[a] = {
-              color: c,
-              value: E[a]
-            };
-            for (let f = 0; f < _.length; f++) b[f] = {
-              color: $,
-              value: _[f]
-            };
-            for (let v = 0; v < p.length; v++) U[v] = {
-              color: d,
-              value: p[v]
-            };
-            for (let y = 0; y < A.length; y++) P[y] = {
-              color: u,
-              value: A[y]
-            };
-            for (let x = 0; x < Y.length; x++) L[x] = {
-              color: g,
-              value: Y[x]
-            };
-            l.addEventListener("mousemove", O), l.addEventListener("touchmove", W, {
-                passive: !0
-              }), l.addEventListener("touchstart", W, {
-                passive: !0
-              }), window.addEventListener("resize", k),
-              function e() {
-                (function e() {
-                  M[0] = Math.round(D[0] += (i.y - D[0]) * .4), I[0] = Math.round(T[0] += (i.x - T[0]) * .4);
-                  for (let t = 1; t < w; t++) M[t] = Math.round(D[t] += (M[t - 1] - D[t]) * .4), I[t] = Math.round(T[t] += (I[t - 1] - T[t]) * .4), D[t - 1] >= o - 80 && (D[t - 1] = o - 80), T[t - 1] >= n - 80 && (T[t - 1] = n - 80)
-                })(),
-                function e() {
-                  h.clearRect(0, 0, n, o);
-                  let t = new Date,
-                    l = t.getSeconds(),
-                    i = Math.PI * (l - 15) / 30,
-                    r = t.getMinutes(),
-                    s = Math.PI * (r - 15) / 30,
-                    c = t.getHours(),
-                    $ = Math.PI * (c - 3) / 6 + Math.PI * parseInt(t.getMinutes()) / 360;
-                  for (let g = 0; g < B.length; g++) B[g].y = D[g] + 67.5 * Math.sin(-i + g * R * Math.PI / 180), B[g].x = T[g] + 67.5 * Math.cos(-i + g * R * Math.PI / 180), h.fillStyle = B[g].color, h.fillText(B[g].value, B[g].x, B[g].y);
-                  for (let u = 0; u < b.length; u++) b[u].y = D[B.length + u] + 45 * Math.sin(u * C * Math.PI / 180), b[u].x = T[B.length + u] + 45 * Math.cos(u * C * Math.PI / 180), h.fillStyle = b[u].color, h.fillText(b[u].value, b[u].x, b[u].y);
-                  for (let d = 0; d < U.length; d++) U[d].y = D[B.length + m + d] + 0 + d * S * Math.sin($), U[d].x = T[B.length + m + d] + 0 + d * S * Math.cos($), h.fillStyle = U[d].color, h.fillText(U[d].value, U[d].x, U[d].y);
-                  for (let a = 0; a < P.length; a++) P[a].y = D[B.length + m + U.length + a] + 0 + a * S * Math.sin(s), P[a].x = T[B.length + m + U.length + a] + 0 + a * S * Math.cos(s), h.fillStyle = P[a].color, h.fillText(P[a].value, P[a].x, P[a].y);
-                  for (let f = 0; f < L.length; f++) L[f].y = D[B.length + m + U.length + P.length + f] + 0 + f * S * Math.sin(i), L[f].x = T[B.length + m + U.length + P.length + f] + 0 + f * S * Math.cos(i), h.fillStyle = L[f].color, h.fillText(L[f].value, L[f].x, L[f].y)
-                }(), s = requestAnimationFrame(e)
-              }()
-          }
+    if (H.matches) return console.log("This browser has prefers reduced motion turned on, so the cursor did not init"), !1;
+    h = (r = document.createElement("canvas")).getContext("2d"), r.style.top = "0px", r.style.left = "0px", r.style.pointerEvents = "none", t ? (r.style.position = "absolute", l.appendChild(r), r.width = l.clientWidth, r.height = l.clientHeight) : (r.style.position = "fixed", document.body.appendChild(r), r.width = n, r.height = o), h.font = "10px sans-serif", h.textAlign = "center", h.textBaseline = "middle";
+    for (let e = 0; e < w; e++) D[e] = 0, T[e] = 0, M[e] = 0, I[e] = 0;
+    for (let a = 0; a < E.length; a++) B[a] = {
+        color: c,
+        value: E[a]
+    };
+    for (let f = 0; f < _.length; f++) b[f] = {
+        color: $,
+        value: _[f]
+    };
+    for (let v = 0; v < p.length; v++) U[v] = {
+        color: d,
+        value: p[v]
+    };
+    for (let y = 0; y < A.length; y++) P[y] = {
+        color: u,
+        value: A[y]
+    };
+    for (let x = 0; x < Y.length; x++) L[x] = {
+        color: g,
+        value: Y[x]
+    };
+    l.addEventListener("mousemove", O), l.addEventListener("touchmove", W, {
+        passive: !0
+    }), l.addEventListener("touchstart", W, {
+        passive: !0
+    }), window.addEventListener("resize", k),
+    function e() {
+        (function e() {
+            M[0] = Math.round(D[0] += (i.y - D[0]) * .4), I[0] = Math.round(T[0] += (i.x - T[0]) * .4);
+            for (let t = 1; t < w; t++) M[t] = Math.round(D[t] += (M[t - 1] - D[t]) * .4), I[t] = Math.round(T[t] += (I[t - 1] - T[t]) * .4), D[t - 1] >= o - 80 && (D[t - 1] = o - 80), T[t - 1] >= n - 80 && (T[t - 1] = n - 80)
+        })(),
+        function e() {
+            h.clearRect(0, 0, n, o);
+            let t = new Date,
+                l = t.getSeconds(),
+                i = Math.PI * (l - 15) / 30,
+                r = t.getMinutes(),
+                s = Math.PI * (r - 15) / 30,
+                c = t.getHours(),
+                $ = Math.PI * (c - 3) / 6 + Math.PI * parseInt(t.getMinutes()) / 360;
+
+            // Get the loudness value and scale it from 0-1 to 1-2
+            const volume = (calculateLoudness() * (2 - 1)) + 1;
+
+            for (let g = 0; g < B.length; g++) {
+                B[g].y = D[g] + 67.5 * Math.sin(-i + g * R * Math.PI / 180) * volume;
+                B[g].x = T[g] + 67.5 * Math.cos(-i + g * R * Math.PI / 180) * volume;
+                h.fillStyle = B[g].color;
+                h.fillText(B[g].value, B[g].x, B[g].y);
+            }
+
+            for (let u = 0; u < b.length; u++) {
+                b[u].y = D[B.length + u] + 45 * Math.sin(u * C * Math.PI / 180) * volume;
+                b[u].x = T[B.length + u] + 45 * Math.cos(u * C * Math.PI / 180) * volume;
+                h.fillStyle = b[u].color;
+                h.fillText(b[u].value, b[u].x, b[u].y);
+            }
+
+            for (let d = 0; d < U.length; d++) {
+                U[d].y = D[B.length + m + d] + 0 + d * S * Math.sin($) * volume;
+                U[d].x = T[B.length + m + d] + 0 + d * S * Math.cos($) * volume;
+                h.fillStyle = U[d].color;
+                h.fillText(U[d].value, U[d].x, U[d].y);
+            }
+
+            for (let a = 0; a < P.length; a++) {
+                P[a].y = D[B.length + m + U.length + a] + 0 + a * S * Math.sin(s) * volume;
+                P[a].x = T[B.length + m + U.length + a] + 0 + a * S * Math.cos(s) * volume;
+                h.fillStyle = P[a].color;
+                h.fillText(P[a].value, P[a].x, P[a].y);
+            }
+
+            for (let f = 0; f < L.length; f++) {
+                L[f].y = D[B.length + m + U.length + P.length + f] + 0 + f * S * Math.sin(i) * volume;
+                L[f].x = T[B.length + m + U.length + P.length + f] + 0 + f * S * Math.cos(i) * volume;
+                h.fillStyle = L[f].color;
+                h.fillText(L[f].value, L[f].x, L[f].y);
+            }
+        }(), s = requestAnimationFrame(e)
+    }()
+}
+
 
           function k(e) {
             n = window.innerWidth, o = window.innerHeight, t ? (r.width = l.clientWidth, r.height = l.clientHeight) : (r.width = n, r.height = o)
