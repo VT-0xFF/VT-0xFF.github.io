@@ -1,5 +1,4 @@
-<html>
-  <head>
+<html><head>
     <title>VTMGR</title>
     <meta charset="utf-8">
     <meta content="text/html; charset=utf-8" http-equiv="Content-type">
@@ -9,13 +8,15 @@
         width: 100%;
         height: 100%;
         position: fixed;
-        background-color: #282828;
+        background: #282828;
         margin: 0;
         padding: 0;
         font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
         color: #fff;
+        z-index: -25;
+        background-size: cover;
       }
-          .blur-overlay {
+      .blur-overlay {
       position: fixed;
       top: 0px;
       left: 0px;
@@ -47,19 +48,102 @@
         width: 600px;
         margin: 5em auto;
         padding: 2em;
-        background-color: #484848;
+        background-color: rgba(.6,.6,.6,.6);
         border-radius: .5em;
         box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, .02)
       }
+	  
+	    .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background: #444;
+            padding: 10px;
+            border-radius: 10px;
+            gap: 10px;
+        }
+
+        .audio-controls svg {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            fill: white;
+            transition: fill 0.3s ease;
+        }
+        .audio-controls input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            fill: white;
+            transition: fill 0.3s ease;
+            position: fixed;
+            opacity: 0;
+        }
+
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-container input[type="range"] {
+            margin: 0 10px;
+            width: 100px;
+            background: transparent;
+            -webkit-appearance: none;
+        }
+
+.slider-container input[type="range"] {
+    margin: 0 10px;
+    width: 100px;
+    background: transparent;
+    -webkit-appearance: none;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    position: relative;
+    top: -3px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.slider-container input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: linear-gradient(to right, #fff 0%, #fff var(--thumb-position), #777 var(--thumb-position), #777 100%);
+    border-radius: 2px;
+}
     </style>
   </head>
   <body>
-    <div class="blur-overlay" id="overlay"><b>Click to Enter...</b></div>
-  <audio id="audio" loop></audio>
+  <audio id="audio" loop="" src="TDB_-_Welcome_to_The_Bunker.mp3"></audio>
     <div class="main">
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
       <h1>VT</h1>
       <p style="text-align:center">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games. </p>
+	  <div class="audio-controls" id="audio-controls">
+        <div id="volume-icon">
+            <input type="checkbox" id="volume-button">
+			<img id="volume-svg" src="volume_up.svg">
+			</input>
+        </div>
+        <div class="slider-container">
+            <input id="volume-slider" type="range" min="0" max="100" value="100">
+        </div>
+        <div id="play-icon">
+			<input type="checkbox" id="play-button">
+			<img id="play-svg" src="pause_circle.svg">
+			</input>
+        </div>
+    </div>
+	<div class="blur-overlay" id="overlay"><b>Click to Enter...</b></div>
       <script>
       const overlay = document.getElementById('overlay')
       const audio = document.getElementById('audio');
@@ -91,8 +175,83 @@ function getaudio() {
   return audio;
 }
 audio.src = getaudio();
+
+const backgrounds=["image (13).png"]
+
+const lastbg = localStorage.getItem('lastbg');
+
+function getbg() {
+  if (backgrounds.length==1){
+    return backgrounds[0]
+  }
+  let bg;
+  do {
+    bg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+  } while (bg === lastbg);
+  return audio;
+}
+document.body.style.backgroundImage = 'url("'+getbg()+'")';
+
+const slider = document.getElementById('volume-slider');
+slider.value = 40
+function sliderupdate(){
+	const value = slider.value;
+    const min = slider.min;
+    const max = slider.max;
+    const percentage = ((value - min) / (max - min)) * 100;
+	audio.volume = value/100
+    slider.style.setProperty('--thumb-position', `${percentage}%`);
+}
+
+const mute = document.getElementById('volume-button');
+const pause = document.getElementById('play-button');
+const mutesvg = document.getElementById('volume-svg');
+const pausesvg = document.getElementById('play-svg');
+const audiodiv = document.getElementById('audio-controls');
+
+function updatesvgs() {
+	if (pause.checked){
+		pausesvg.src = "play_circle.svg"
+	} else {
+		pausesvg.src = "pause_circle.svg"
+	}
+	if (mute.checked){
+		mutesvg.src = "volume_off.svg"
+	} else {
+		mutesvg.src = "volume_up.svg"
+	}
+}
+
+sliderupdate()
+slider.addEventListener('input', sliderupdate);
+
+let lastvolume = 0;
+
+mute.addEventListener('click', () => {
+	if (mute.checked) {
+		lastvolume = slider.value;
+		slider.value = 0
+	} else {
+		slider.value = lastvolume
+	}
+	updatesvgs()
+	sliderupdate()
+})
+pause.addEventListener('click', () => {
+	if (pause.checked) {
+		lastvolume = slider.value;
+		slider.value = 0
+		audio.pause()
+	} else {
+		audio.play()
+		slider.value = lastvolume
+	}
+	updatesvgs()
+	sliderupdate()
+})
+
 function tryplay(){
-audio.play()
+    audio.play()
       audio.volume = 0.4
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
       analyser = audioContext.createAnalyser();
@@ -107,12 +266,13 @@ audio.play()
       });
 }
 localStorage.setItem('lastaudio', audio.src);
-try{tryplay()} catch {overlay.addEventListener('click', () => { tryplay() })}
+overlay.addEventListener('click', tryplay)
 function calculateLoudness() {
     if (analyser) {
       analyser.getByteFrequencyData(frequencyData);
       const sum = frequencyData.reduce((a, b) => a + b ** 2, 0);
-      return Math.sqrt(sum / frequencyData.length) / 255;
+	  const result = Math.sqrt(sum / frequencyData.length) / 255;
+      return result;
     }
     return 0;
   }
@@ -200,13 +360,15 @@ function clockCursor(e) {
                 c = t.getHours(),
                 $ = Math.PI * (c - 3) / 6 + Math.PI * parseInt(t.getMinutes()) / 360;
 
-            // Get the loudness value and scale it from 0-1 to 1-2
             const volume = (calculateLoudness() * (2 - 1)) + 1;
 
             for (let g = 0; g < B.length; g++) {
                 B[g].y = D[g] + 67.5 * Math.sin(-i + g * R * Math.PI / 180) * volume;
                 B[g].x = T[g] + 67.5 * Math.cos(-i + g * R * Math.PI / 180) * volume;
                 h.fillStyle = B[g].color;
+                h.strokeStyle = "black";
+                h.lineWidth = 2;
+                h.strokeText(B[g].value, B[g].x, B[g].y);
                 h.fillText(B[g].value, B[g].x, B[g].y);
             }
 
@@ -214,6 +376,9 @@ function clockCursor(e) {
                 b[u].y = D[B.length + u] + 45 * Math.sin(u * C * Math.PI / 180) * volume;
                 b[u].x = T[B.length + u] + 45 * Math.cos(u * C * Math.PI / 180) * volume;
                 h.fillStyle = b[u].color;
+                h.strokeStyle = "black";
+                h.lineWidth = 2;
+                h.strokeText(b[u].value, b[u].x, b[u].y);
                 h.fillText(b[u].value, b[u].x, b[u].y);
             }
 
@@ -221,6 +386,9 @@ function clockCursor(e) {
                 U[d].y = D[B.length + m + d] + 0 + d * S * Math.sin($) * volume;
                 U[d].x = T[B.length + m + d] + 0 + d * S * Math.cos($) * volume;
                 h.fillStyle = U[d].color;
+                h.strokeStyle = "black";
+                h.lineWidth = 2;
+                h.strokeText(U[d].value, U[d].x, U[d].y);
                 h.fillText(U[d].value, U[d].x, U[d].y);
             }
 
@@ -228,6 +396,9 @@ function clockCursor(e) {
                 P[a].y = D[B.length + m + U.length + a] + 0 + a * S * Math.sin(s) * volume;
                 P[a].x = T[B.length + m + U.length + a] + 0 + a * S * Math.cos(s) * volume;
                 h.fillStyle = P[a].color;
+                h.strokeStyle = "black";
+                h.lineWidth = 2;
+                h.strokeText(P[a].value, P[a].x, P[a].y);
                 h.fillText(P[a].value, P[a].x, P[a].y);
             }
 
@@ -235,11 +406,15 @@ function clockCursor(e) {
                 L[f].y = D[B.length + m + U.length + P.length + f] + 0 + f * S * Math.sin(i) * volume;
                 L[f].x = T[B.length + m + U.length + P.length + f] + 0 + f * S * Math.cos(i) * volume;
                 h.fillStyle = L[f].color;
+                h.strokeStyle = "black";
+                h.lineWidth = 2;
+                h.strokeText(L[f].value, L[f].x, L[f].y);
                 h.fillText(L[f].value, L[f].x, L[f].y);
             }
         }(), s = requestAnimationFrame(e)
     }()
 }
+
 
 
           function k(e) {
@@ -287,6 +462,6 @@ function clockCursor(e) {
           subtree: !0
         }), removeDarkReaderElements();
       </script>
-    </div>
-  </body>
-</html>
+    </div><canvas style="top: 0px; left: 0px; pointer-events: none; position: fixed;" width="2048" height="1026"></canvas>
+  
+</body></html>
