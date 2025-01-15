@@ -91,11 +91,8 @@ function getaudio() {
   return audio;
 }
 audio.src = getaudio();
-
-localStorage.setItem('lastaudio', audio.src);
-        overlay.addEventListener('click', () => {
-        
-      audio.play()
+function tryplay(){
+audio.play()
       audio.volume = 0.4
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
       analyser = audioContext.createAnalyser();
@@ -108,7 +105,9 @@ localStorage.setItem('lastaudio', audio.src);
       overlay.addEventListener('transitionend', () => {
         overlay.remove();
       });
-    })
+}
+localStorage.setItem('lastaudio', audio.src);
+try{tryplay()} catch {overlay.addEventListener('click', () => { tryplay() })}
 function calculateLoudness() {
     if (analyser) {
       analyser.getByteFrequencyData(frequencyData);
