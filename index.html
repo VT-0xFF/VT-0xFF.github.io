@@ -64,23 +64,23 @@
     </style>
   </head>
   <body>
-    <div class="blur-overlay" id="overlay" onclick="unblur()">Click to continue.</div>
+    <div class="blur-overlay" id="overlay">Click to continue.</div>
   <audio id="audio" src="shoot.mp3"></audio>
     <div>
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
       <h1>VT</h1>
       <p style="text-align:center">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games. </p>
       <script>
-            window.unblur = function() {
-      const overlay = document.getElementById('overlay');
+      const overlay = document.getElementById('overlay')
+      
+      overlay.addEventListener('click', () => {
       const audio = document.getElementById('audio');
       audio.play()
       overlay.classList.add('hidden');
       overlay.addEventListener('transitionend', () => {
         overlay.remove();
       });
-    }
-  </sc
+    })
         function clockCursor(e) {
           let t = e && e.element,
             l = t || document.body,
