@@ -67,8 +67,35 @@
       let source = null;
       let audioContext = null;
       let frequencyData = 0
-      const audios = ["TDB_-_Welcome_to_The_Bunker.mp3","Trying.mp3","index.html","shoot.mp3","soundcloud_1293396583_audio.mp3","soundcloud_20863566_audio.mp3","soundcloud_825888547_audio.opus","youtube_-2yAEUp9v6M_audio.opus","youtube_-zPv24yAzwg_audio.mp3","youtube_94NIC0WijLY_audio.mp3","youtube_AXnqkVTFUqY_audio.mp3","youtube_I-jh-heGS9Q_audio.mp3","youtube_dTfmUAg0AGM_audio.mp3"]
-      audio.src = audios[Math.floor(Math.random() * audios.length)]
+      const audios = [
+  "TDB_-_Welcome_to_The_Bunker.mp3",
+  "Trying.mp3",
+  "shoot.mp3",
+  "soundcloud_1293396583_audio.mp3",
+  "soundcloud_20863566_audio.mp3",
+  "soundcloud_825888547_audio.opus",
+  "youtube_-2yAEUp9v6M_audio.opus",
+  "youtube_-zPv24yAzwg_audio.mp3",
+  "youtube_94NIC0WijLY_audio.mp3",
+  "youtube_AXnqkVTFUqY_audio.mp3",
+  "youtube_I-jh-heGS9Q_audio.mp3",
+  "youtube_dTfmUAg0AGM_audio.mp3"
+];
+
+const lastaudio = localStorage.getItem('lastaudio');
+
+function getaudio() {
+  let audio;
+  do {
+    audio = audios[Math.floor(Math.random() * audios.length)];
+  } while (audio === lastaudio);
+  return audio;
+}
+
+const audio = document.createElement('audio');
+audio.src = getaudio();
+
+localStorage.setItem('lastaudio', audio.src);
         overlay.addEventListener('click', () => {
         
       audio.play()
