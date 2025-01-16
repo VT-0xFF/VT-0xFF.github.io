@@ -188,7 +188,7 @@ function getbg() {
   do {
     bg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
   } while (bg === lastbg);
-  return audio;
+  return bg;
 }
 document.body.style.backgroundImage = 'url("'+getbg()+'")';
 
