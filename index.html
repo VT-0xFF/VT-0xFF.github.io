@@ -37,9 +37,32 @@
       display: flex;
     }
 
+.inflate:hover {
+  transform: scale(1.1);
+}
+.inflate {
+  transition: transform 0.3s ease;
+}
+
+
     .blur-overlay.hidden {
       opacity: 0;
     }
+.socials {
+    border-radius: 10px;
+    box-shadow: 0px 0px 25px #fff, inset 0px 0px 15px #000;
+    width: 100%;
+    height: 6vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.socials a {height: calc(100% - 1vh);aspect-ratio: 1;color: #00000000;border-radius: 5px;font-size: 0;background-repeat: no-repeat;background-position-y: center;background-size: contain;margin: 0.5vh;}
+
+.discordsocial {background: url("discord-mark-white.svg");}
+.githubsocial {background: url("github-mark-white.svg");}
+.bskysocial {background: url("Bluesky_Logo.svg");}
+.robloxsocial {background: url("brand-roblox-svgrepo-com.svg");}
 
       .main {
         display: flex;
@@ -122,28 +145,37 @@
 }
     </style>
   </head>
-  <body>
-  <audio id="audio" loop="" src="TDB_-_Welcome_to_The_Bunker.mp3"></audio>
+  <body style="background-image: url(&quot;image (13).png&quot;);">
+  <audio id="audio" loop=""></audio>
+  <div class="blur-overlay" id="overlay"><b>Click to Enter...</b></div>
     <div class="main">
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
-      <h1>VT</h1>
-      <p style="text-align:center">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games. </p>
+      <h1 style="
+    margin-bottom: -0.3vh;
+">VT</h1>
+      <p style="text-align:center;margin-bottom: 3vh;">i am an Arτist. <br>i do not sugar coat or hold back. <br>sometimes i exploit websites or games.<br></p>
+	  <div id="socials" class="socials">
+		<a href="https://discord.com/users/276069458131288065" class="inflate discordsocial">Discord</a>
+		<a href="https://github.com/VT-0xFF" class="inflate githubsocial">Github</a>
+		<a href="https://vtmgr.bsky.social" class="inflate bskysocial">Bsky</a>
+		<a href="https://www.roblox.com/users/1257293415" class="inflate robloxsocial">Roblox</a>
+	  </div>
 	  <div class="audio-controls" id="audio-controls">
-        <div id="volume-icon">
+        <div id="volume-icon" class="inflate">
             <input type="checkbox" id="volume-button">
 			<img id="volume-svg" src="volume_up.svg">
-			</input>
+			
         </div>
         <div class="slider-container">
-            <input id="volume-slider" type="range" min="0" max="100" value="100">
+            <input id="volume-slider" type="range" min="0" max="100" value="100" style="--thumb-position: 40%;">
         </div>
-        <div id="play-icon">
+        <div id="play-icon" class="inflate">
 			<input type="checkbox" id="play-button">
 			<img id="play-svg" src="pause_circle.svg">
-			</input>
+			
         </div>
     </div>
-	<div class="blur-overlay" id="overlay"><b>Click to Enter...</b></div>
+	
       <script>
       const overlay = document.getElementById('overlay')
       const audio = document.getElementById('audio');
@@ -471,6 +503,5 @@ function clockCursor(e) {
           subtree: !0
         }), removeDarkReaderElements();
       </script>
-    </div><canvas style="top: 0px; left: 0px; pointer-events: none; position: fixed;" width="2048" height="1026"></canvas>
-  
+    </div><canvas style="top: 0px; left: 0px; pointer-events: none; position: fixed;" width="1920" height="953"></canvas>
 </body></html>
