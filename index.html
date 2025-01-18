@@ -12,12 +12,12 @@
         width: 100%;
         height: 100%;
         position: fixed;
-        background: #282828;
+        background: #00000000;
         margin: 0;
         padding: 0;
         color: #fff;
-		font-family: "Jersey 15", serif;
-		font-style: normal;
+        font-family: "Jersey 15", serif;
+        font-style: normal;
         z-index: -25;
         background-size: cover;
       }
@@ -201,14 +201,15 @@
       }
     </style>
   </head>
-  <body style="background-image: url(&quot;banner.png&quot;);">
-    <audio id="audio" loop="" src="soundcloud_825888547_audio.opus"></audio>
+  <body>
+    <audio id="audio" loop src="soundcloud_825888547_audio.opus"></audio>
+	<video id="video" autoplay muted loop style="position:fixed;left:0px;top:0px;width:100%;z-index:-2;"></video>
     <div class="main">
       <img src="https://i.imgur.com/58qZvYo.png" style="width:20%;border-radius:100%">
       <h1 style="
     margin-bottom: -0.3vh;
 ">VT</h1>
-      <p style="text-align:center;margin-bottom: 3vh;">Arτist<sup>?</sup><br>i say it how it is<br>sometimes i exploit websites or games<br>
+      <p style="text-align:center;margin-bottom: 3vh;">Arτist <br>i say it how it is<br>sometimes i exploit websites or games<br>
       </p>
       <div id="socials" class="socials">
         <a href="https://discord.com/users/276069458131288065" class="inflate discordsocial">Discord</a>
@@ -240,7 +241,7 @@
         let source = null;
         let audioContext = null;
         let frequencyData = 0
-        const audios = ["TDB_-_Welcome_to_The_Bunker.mp3", "youtube_bUX8MDNQda4_audio.mp3", "hold on.mp3", "shoot.mp3", "soundcloud_1293396583_audio.mp3", "youtube__3sppUXoXck_audio.mp3", "soundcloud_20863566_audio.mp3", "soundcloud_825888547_audio.opus", "youtube_-2yAEUp9v6M_audio.opus", "youtube_-zPv24yAzwg_audio.mp3", "youtube_94NIC0WijLY_audio.mp3", "youtube_AXnqkVTFUqY_audio.mp3", "youtube_I-jh-heGS9Q_audio.mp3", "youtube_dTfmUAg0AGM_audio.mp3", "futret cupcakes instrumental.mp3", "youtube_yx-hjxE_9P8_audio.opus", "khai-dreams-summer-is-like-a-dream.mp3", "Chills - Sidelined audio.mp3", "Dirty Palm - Freakshow (feat. LexBlaze) [Lyrics].mp3", "Mounika - Cut My Hair ft. Cavetown [Lyrics].mp3", "atlas - valentine (prod. flavors) (official audio).mp3", "Losin' It - Brakence, Glaive, Ericdoa, Osquinn, Kmoe, Valentine _ LYRICS + Line Distribution.mp3", "youtube_GQ__Xz4D8uM_audio.opus", "youtube_eUJ9Kk-Lzbk_audio.opus","VIOLENT VIRA - I Don't Care Opium remix.mp3","youtube_2cXL09xy-N4_audio.mp3","Theme.mp3","yourbrains.mp3","yt5s.io - Baby Keem, Kendrick Lamar - family ties (Lyrics) (320 kbps).mp3","The Moment (BoyNGirl).ogg","6foot.mp3","am_I_funny_now.mp3","yt5s.io - Murders (320 kbps).mp3","youtube_9cHIi3h8aAo_audio.opus"];
+        const audios = ["TDB_-_Welcome_to_The_Bunker.mp3", "shoot.mp3", "soundcloud_1293396583_audio.mp3", "soundcloud_20863566_audio.mp3", "soundcloud_825888547_audio.opus", "youtube_-2yAEUp9v6M_audio.opus", "youtube_-zPv24yAzwg_audio.mp3", "youtube_94NIC0WijLY_audio.mp3", "youtube_AXnqkVTFUqY_audio.mp3", "youtube_I-jh-heGS9Q_audio.mp3", "youtube_dTfmUAg0AGM_audio.mp3", "futret cupcakes instrumental.mp3", "youtube_yx-hjxE_9P8_audio.opus", "khai-dreams-summer-is-like-a-dream.mp3", "Chills - Sidelined audio.mp3", "Dirty Palm - Freakshow (feat. LexBlaze) [Lyrics].mp3", "Mounika - Cut My Hair ft. Cavetown [Lyrics].mp3", "atlas - valentine (prod. flavors) (official audio).mp3", "Losin' It - Brakence, Glaive, Ericdoa, Osquinn, Kmoe, Valentine _ LYRICS + Line Distribution.mp3", "youtube_GQ__Xz4D8uM_audio.opus", "youtube_eUJ9Kk-Lzbk_audio.opus","VIOLENT VIRA - I Don't Care Opium remix.mp3","youtube_2cXL09xy-N4_audio.mp3","Theme.mp3","yourbrains.mp3","yt5s.io - Baby Keem, Kendrick Lamar - family ties (Lyrics) (320 kbps).mp3","The Moment (BoyNGirl).ogg","6foot.mp3","am_I_funny_now.mp3","yt5s.io - Murders (320 kbps).mp3","youtube_9cHIi3h8aAo_audio.opus"];
         const lastaudio = localStorage.getItem('lastaudio');
 
         function getaudio() {
@@ -267,7 +268,7 @@
           audio.play();
           localStorage.setItem('lastaudio', selectedAudio);
         });
-        const backgrounds = ["image (13).png", "banner.png"]
+        const backgrounds = ["image (13).png","banner.png","2025-01-18 12-37-17.mp4"]
         const lastbg = localStorage.getItem('lastbg');
 
         function getbg() {
@@ -280,7 +281,18 @@
           } while (bg === lastbg);
           return bg;
         }
-        document.body.style.backgroundImage = 'url("' + getbg() + '")';
+		const bg = getbg();
+		const  isvideo = (bg.endsWith(".png") || bg.endsWith(".jpg"));
+		localStorage.setItem('lastbg', bg);
+		if (isvideo) {
+			document.body.style.backgroundImage = 'url("' + bg + '")';
+		} else {
+			document.body.style["background-color"] = "rgba(0,0,0,0);"
+			const video = document.getElementById('video');
+			video.src = bg;
+			video.onload = function(){video.play()}
+		}
+        
         const slider = document.getElementById('volume-slider');
         slider.value = 40
 
